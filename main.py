@@ -1,5 +1,4 @@
-#Esse conjunto de dados me da como saida um numero de dias
-#e algo que aconteceu apos esse dias, sendo C (censurado)/CL (censurado devido ao tx do fígado/D (óbito)
+
 import keras
 from keras.utils import to_categorical
 import pandas as pd 
