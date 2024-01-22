@@ -14,9 +14,6 @@ Certifique-se de ter o arquivo 'cirrhosis.csv' no mesmo diretório que este scri
 
 # Execute o script.
 
-bash
-Copy code
-python nome_do_script.py
 O script realizará as seguintes etapas:
 
 Carregará os dados do arquivo 'cirrhosis.csv' e removerá as linhas com valores ausentes.
