@@ -9,12 +9,7 @@ Keras
 pandas
 scikit-learn
 numpy
-Você pode instalá-las executando o seguinte comando:
 
-bash
-Copy code
-pip install keras pandas scikit-learn numpy
-Instruções de Uso
 Certifique-se de ter o arquivo 'cirrhosis.csv' no mesmo diretório que este script. Este arquivo contém os dados necessários para treinar e testar a RNA.
 
 # Execute o script.
@@ -25,12 +20,19 @@ python nome_do_script.py
 O script realizará as seguintes etapas:
 
 Carregará os dados do arquivo 'cirrhosis.csv' e removerá as linhas com valores ausentes.
+
 Transformará os dados de entrada em formato numérico usando a classe LabelEncoder da biblioteca scikit-learn.
+
 Criará a representação one-hot encoding para os dados de saída usando a função to_categorical do Keras.
+
 Definirá a arquitetura da RNA usando a biblioteca Keras, com três camadas ocultas e uma camada de saída.
+
 Utilizará a função de otimização Adam com uma taxa de aprendizado de 0.002 e decaimento de peso de 0.002.
+
 Compilará o modelo usando a função de perda 'categorical_crossentropy' e métricas de precisão categórica.
+
 Criará uma instância do wrapper KerasClassifier para o modelo Keras, configurada para treinar por 1000 épocas com um tamanho de lote de 10.
+
 Avaliará o desempenho do modelo usando validação cruzada com 10 dobras.
 #  Resultados
 O modelo foi refinado e agora alcança uma acurácia média de 72% nas 10 dobras de validação cruzada. Este desempenho melhorado proporciona uma base mais robusta para a previsão do estado de sobrevivência de pacientes com cirrose hepática. No entanto, continua sendo uma área de desenvolvimento contínuo, e ajustes adicionais podem ser explorados para aprimorar ainda mais a precisão do modelo.
