@@ -5,10 +5,10 @@ Este script em Python utiliza a biblioteca Keras e Scikit-learn para criar uma R
 # Requisitos
 Certifique-se de ter as seguintes bibliotecas instaladas no seu ambiente Python:
 
-Keras
-pandas
-scikit-learn
-numpy
+- Keras
+- pandas
+- scikit-learn
+- numpy
 
 Certifique-se de ter o arquivo 'cirrhosis.csv' no mesmo diretório que este script. Este arquivo contém os dados necessários para treinar e testar a RNA.
 
