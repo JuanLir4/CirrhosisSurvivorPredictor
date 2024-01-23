@@ -1,9 +1,11 @@
 #Esse conjunto de dados me da como saida um numero de dias
 #e algo que aconteceu apos esse dias, sendo C (censurado)/CL (censurado devido ao tx do fígado/D (óbito)
 import keras
+from scipy.sparse import csr_matrix
 from keras.utils import to_categorical
 import pandas as pd 
-from sklearn.preprocessing import LabelEncoder #tranformar em numeros
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder #tranformar em numeros e em matrizes
+from sklearn.compose import ColumnTransformer
 import numpy as np
 from keras.layers import Dense,Dropout
 from keras.models import Sequential
@@ -12,55 +14,113 @@ from sklearn.model_selection import cross_val_score
 
 labelencoder = LabelEncoder()
 
-DadosTotais  = pd.read_csv('cirrhosis.csv').dropna()
-
-#preciso modificar alguns dados de entrada para numeros
-dados_entrada = DadosTotais.iloc[:, 3:].values#apartir de drug
-
-for i in range(dados_entrada.shape[1]):
-    dados_entrada[:, i] = labelencoder.fit_transform(dados_entrada[:, i]) 
-dados_entrada = np.asarray(dados_entrada).astype(np.float32)
+DadosTotais  = pd.read_csv('cirrhosis.csv', encoding= 'ISO-8859-1')
 
 
-dados_saida = DadosTotais.iloc[:, 2].values
+#mostrar a variação dos dados, desse modo verificamos se é viavel utiliza-los e como devemos tratalos 
+DadosTotais['Drug'].value_counts()
+DadosTotais['Sex'].value_counts()
+DadosTotais['Ascites'].value_counts()
+DadosTotais['Hepatomegaly'].value_counts()
+DadosTotais['Spiders'].value_counts()
+DadosTotais['Edema'].value_counts()
 
-dados_saida = labelencoder.fit_transform(dados_saida) 
-dados_saida1 = to_categorical(dados_saida)
-dados_saida1  = np.asarray(dados_saida1 ).astype(np.float32)
+
+
+#verifiquei que todos os dados depois da linha 313 nao devem ser utilizados:
+DadosTotais = DadosTotais.drop(range(312, 418))
+
+#procurando dados 'NaN' e substituindo pela media:
+colunas_com_nulos = DadosTotais.columns[DadosTotais.isnull().any()]
+#print(colunas_com_nulos) -> 'Cholesterol', 'Copper', 'Tryglicerides', 'Platelets'
+
+#achando as medias
+DadosTotais['Cholesterol'].value_counts()
+MediaCholesterol = DadosTotais['Cholesterol'].mean()
+
+DadosTotais['Copper'].value_counts()
+MediaCopper = DadosTotais['Copper'].mean()
+
+
+DadosTotais['Tryglicerides'].value_counts()
+MediaTryglicerides = DadosTotais['Tryglicerides'].mean()
+
+
+DadosTotais['Platelets'].value_counts()
+MediaPlatelets = DadosTotais['Platelets'].mean()
+
+#substituindo
+valores = { 'Cholesterol' : MediaCholesterol, 'Copper' : MediaCopper,
+           'Tryglicerides' : MediaTryglicerides, 'Platelets' : MediaPlatelets}
+
+DadosTotais = DadosTotais.fillna(value = valores)
+
+#testando:
+colunas_com_nulos2 = DadosTotais.columns[DadosTotais.isnull().any()]
+#print(colunas_com_nulos2) - > Index([], dtype='object') 
+
+
+#separar o conjunto de dados:
+dados_entrada = DadosTotais.iloc[:, 3: ]
+dados_saida = DadosTotais.iloc[:, 2]
+
+#percebemos que em 'edema' temos 3 opções em vez de 2,  provavel erro.
+dados_entrada['Edema'] = dados_entrada['Edema'].replace('S','Y')
+dados_entrada['Edema'].value_counts()
+
+#passando dados(str) para int
+for i in range(0,6):
+    dados_entrada.iloc[:, i] = labelencoder.fit_transform(dados_entrada.iloc[:, i])
+
+
+#excluir coluna 'age'
+
+dados_entrada = dados_entrada.drop('Age', axis=1)
+
+
+#passando dados(str) para int
+dados_saida = labelencoder.fit_transform(dados_saida)
+
+# passando dados saida para onehot
+from sklearn.compose import ColumnTransformer
+columnTransformer=ColumnTransformer([('encoder',OneHotEncoder(),[0,1,2,3,4,5])],remainder='passthrough')
+dados_entrada=np.array(columnTransformer.fit_transform(dados_entrada))
+
+
+dados_saida = to_categorical(dados_saida)
+
 
 
 
 #começando a rede neural
 def rede_neural():
     classificador = Sequential()
-    classificador.add(Dense(units=10,activation='relu',input_dim=17))
-    classificador.add(Dropout(0.2))
-    classificador.add(Dense(units=5,activation='softmax'))
-    classificador.add(Dropout(0.2))
-    classificador.add(Dense(units=5,activation='softmax'))
-    classificador.add(Dropout(0.2))
-    classificador.add(Dense(units=5,activation='softmax'))
+    classificador.add(Dense(units=12,activation='relu',input_dim=22))
+    classificador.add(Dense(units=6,activation='relu'))
     classificador.add(Dense(units = 3, activation= 'softmax'))
 
-    optimizer = keras.optimizers.Adam(learning_rate=0.002, weight_decay=0.002,)
+    optimizer = keras.optimizers.Adam(learning_rate=0.001, weight_decay=0.004,)
 
 
     classificador.compile(optimizer= optimizer, loss = 'categorical_crossentropy', metrics=['categorical_accuracy'])
-    
+        
     return classificador
 
 classificador = KerasClassifier(build_fn = rede_neural,
                                 epochs = 1000,
-                                batch_size = 10)
+                                batch_size = 30)
 resultados = cross_val_score(estimator = classificador,
-                             X = dados_entrada, y = dados_saida1,
-                             cv = 10, scoring = 'accuracy')
+                            X = dados_entrada, y = dados_saida,
+                            cv = 10, scoring = 'accuracy')
 
 media = resultados.mean()
 desvio = resultados.std()
 
 print(media)
 print(desvio)
+
+
+
 
 
 
