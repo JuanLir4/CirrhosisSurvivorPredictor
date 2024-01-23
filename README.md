@@ -1,8 +1,5 @@
-**Atualização do README: Tratamento de Dados no Código**
 
----
-
-## Cirrhosis Survivor Predictor
+# Cirrhosis Survivor Predictor
 
 Este script em Python utiliza a biblioteca Keras e Scikit-learn para criar uma Rede Neural Artificial (RNA) que utiliza 17 características clínicas para prever o estado de sobrevivência de pacientes com cirrose hepática. O conjunto de dados fornece como saída um número de dias e o evento que ocorreu após o período, sendo C (censurado), CL (censurado devido ao transplante de fígado) ou D (óbito). (por enquanto retorna apenas o evento)
 
