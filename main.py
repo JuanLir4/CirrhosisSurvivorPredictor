@@ -123,31 +123,29 @@ print(media)
 print(desvio)
 
 
-##FICA A LIÇÃO: NAO DA PRA COLOCAR NA MESMA REDE NEURAL, DUAS SAIDAS DE TIPOS DIFERENTES
 ##AGORA VAMOS CRIAR UMA OUTRA REDE PARA OS DIAS
 
 #RedeNeura2
-# previsor = Sequential()
+previsor = Sequential()
 
 
-# previsor.add(Dense(units=12,activation='relu',input_dim=22))
-# previsor.add(Dense(units=24,activation='relu'))
-# previsor.add(Dense(units=24,activation='relu'))
-# previsor.add(Dense(units=24,activation='relu'))
-# previsor.add(Dense(units = 1, activation= 'linear'))
+previsor.add(Dense(units=12,activation='relu',input_dim=22))
+previsor.add(Dense(units=24,activation='relu'))
+previsor.add(Dense(units=24,activation='relu'))
+previsor.add(Dense(units=24,activation='relu'))
+previsor.add(Dense(units = 1, activation= 'linear'))
 
-# optimizer2 = keras.optimizers.Adam(learning_rate=0.001)
+optimizer2 = keras.optimizers.Adam(learning_rate=0.001)
 
-# previsor.compile(optimizer= optimizer2, loss = 'mse')
+previsor.compile(optimizer= optimizer2, loss = 'mse')
         
 
 
 
-# previsor.fit(dados_entrada ,dados_saida2, epochs = 5000, batch_size = 50 )
-# previsoes2 = previsor.predict(dados_entrada)
+previsor.fit(dados_entrada ,dados_saida2, epochs = 5000, batch_size = 50 )
+previsoes2 = previsor.predict(dados_entrada)
 
 
-# print(previsoes2)
-# print(previsoes2.mean())
-# print(dados_saida2.mean())
+print(previsoes2.mean())
+print(dados_saida2.mean())
 
