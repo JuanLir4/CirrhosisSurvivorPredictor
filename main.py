@@ -88,14 +88,17 @@ dados_entrada=np.array(columnTransformer.fit_transform(dados_entrada))
 
 dados_saida = to_categorical(dados_saida)
 
-
-
+#criando agora o dataframe para os dias:
+dados_saida2 = DadosTotais.iloc[:, 1]
 
 #começando a rede neural
-def rede_neural():
+def rede_neural1():
     classificador = Sequential()
     classificador.add(Dense(units=12,activation='relu',input_dim=22))
-    classificador.add(Dense(units=6,activation='relu'))
+    #classificador.add(Dropout(0.2))
+    classificador.add(Dense(units=24,activation='sigmoid'))
+    #classificador.add(Dropout(0.2))
+    classificador.add(Dense(units=24,activation='sigmoid'))
     classificador.add(Dense(units = 3, activation= 'softmax'))
 
     optimizer = keras.optimizers.Adam(learning_rate=0.001, weight_decay=0.004,)
@@ -105,9 +108,9 @@ def rede_neural():
         
     return classificador
 
-classificador = KerasClassifier(build_fn = rede_neural,
+classificador = KerasClassifier(build_fn = rede_neural1,
                                 epochs = 1000,
-                                batch_size = 30)
+                                batch_size = 20)
 resultados = cross_val_score(estimator = classificador,
                             X = dados_entrada, y = dados_saida,
                             cv = 10, scoring = 'accuracy')
@@ -115,19 +118,36 @@ resultados = cross_val_score(estimator = classificador,
 media = resultados.mean()
 desvio = resultados.std()
 
+
 print(media)
 print(desvio)
 
 
+##FICA A LIÇÃO: NAO DA PRA COLOCAR NA MESMA REDE NEURAL, DUAS SAIDAS DE TIPOS DIFERENTES
+##AGORA VAMOS CRIAR UMA OUTRA REDE PARA OS DIAS
+
+#RedeNeura2
+# previsor = Sequential()
+
+
+# previsor.add(Dense(units=12,activation='relu',input_dim=22))
+# previsor.add(Dense(units=24,activation='relu'))
+# previsor.add(Dense(units=24,activation='relu'))
+# previsor.add(Dense(units=24,activation='relu'))
+# previsor.add(Dense(units = 1, activation= 'linear'))
+
+# optimizer2 = keras.optimizers.Adam(learning_rate=0.001)
+
+# previsor.compile(optimizer= optimizer2, loss = 'mse')
+        
 
 
 
+# previsor.fit(dados_entrada ,dados_saida2, epochs = 5000, batch_size = 50 )
+# previsoes2 = previsor.predict(dados_entrada)
 
 
-
-
-
-
-
-
+# print(previsoes2)
+# print(previsoes2.mean())
+# print(dados_saida2.mean())
 
