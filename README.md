@@ -77,4 +77,3 @@ Ambos os modelos fornecem insights valiosos sobre a previsão do estado de sobre
 ### Ajustes Personalizados
 
 Lembre-se de ajustar os parâmetros das RNAs e do treinamento conforme necessário para otimizar o desempenho dos modelos de acordo com seus requisitos específicos.
-```
